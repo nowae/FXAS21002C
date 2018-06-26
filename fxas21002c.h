@@ -46,9 +46,7 @@
 #ifndef __NOWAE_FXAS21002C_H
 #define __NOWAE_FXAS21002C_H
 
-#ifndef __NO_BOARD_H
-#include "board.h"
-#endif
+#include "fxas21002c-register.h"
 
 #define NOWAE_FXAS21002C_LIBRARY_VERSION     "1.0.0"
 #define NOWAE_FXAS21002C_LIBRARY_VERSION_M   1
@@ -77,6 +75,17 @@ typedef enum _FXAS21002C_Address
 /**
  *
  */
+typedef enum _FXAS21002C_Status
+{
+    FXAS21002CSTATUS_STANDBY,
+    FXAS21002CSTATUS_ACTIVE,
+    FXAS21002CSTATUS_READY,
+
+} FXAS21002C_Status;
+
+/**
+ *
+ */
 typedef struct _FXAS21002C_Device
 {
 
@@ -91,6 +100,14 @@ typedef struct _FXAS21002C_Device
 
 #endif
 
+    struct
+    {
+        FXAS21002C_Ctrl0 ctrl0;
+
+    } reg;
+
+    FXAS21002C_Status status;
+
 } FXAS21002C_Device, *FXAS21002C_DeviceHandle;
 
 typedef struct _FXAS21002C_Config
@@ -104,6 +121,9 @@ typedef struct _FXAS21002C_Config
 
 #endif
 
+//    FXAS21002C_FullScaleRange scale;
+//    FXAS21002C_OutputDataRate odr;
+
 } FXAS21002C_Config;
 
 /**
@@ -113,6 +133,9 @@ typedef enum _FXAS21002C_Errors
 {
     FXAS21002CERRORS_NO_ERROR,
     FXAS21002CERRORS_WRONG_REPLY,
+    FXAS21002CERRORS_WRONG_STATUS,
+    FXAS21002CERRORS_WRONG_VALUE,
+
 } FXAS21002C_Errors;
 
 /**
@@ -121,10 +144,10 @@ typedef enum _FXAS21002C_Errors
  */
 typedef enum _FXAS21002C_FullScaleRange
 {
-    FXAS21002CFULLSCALERANGE_2000,
-    FXAS21002CFULLSCALERANGE_1000,
-    FXAS21002CFULLSCALERANGE_500,
-    FXAS21002CFULLSCALERANGE_250,
+    FXAS21002CFULLSCALERANGE_2000 = 0x00,
+    FXAS21002CFULLSCALERANGE_1000 = 0x01,
+    FXAS21002CFULLSCALERANGE_500  = 0x02,
+    FXAS21002CFULLSCALERANGE_250  = 0x03,
 
 } FXAS21002C_FullScaleRange;
 
@@ -157,6 +180,24 @@ FXAS21002C_Errors FXAS21002C_getValues (FXAS21002C_DeviceHandle dev,
                                         int16_t* axisX,
                                         int16_t* axisY,
                                         int16_t* axisZ);
+
+/**
+ *
+ * @param[in] dev
+ * @param[in] range
+ * return
+ */
+FXAS21002C_Errors FXAS21002C_setRange (FXAS21002C_DeviceHandle dev,
+                                       FXAS21002C_FullScaleRange range);
+
+/**
+ *
+ * @param[in] dev
+ * @param[in] range
+ * return
+ */
+FXAS21002C_Errors FXAS21002C_setDataRate (FXAS21002C_DeviceHandle dev,
+                                          FXAS21002C_OutputDataRate odr);
 
 #if (NOWAE_FXAS21002C_DEBUG == 1)
 
